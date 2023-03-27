@@ -47,6 +47,8 @@ export default async function handler(req, res) {
           }
           })
           res.status(201).json(UpdateComment)
+
+          break
   
         } catch {
           console.error(err)
@@ -59,21 +61,15 @@ export default async function handler(req, res) {
   
       case 'DELETE':
         try{
-          const DeleteAllMessages = await prisma.comment.deleteMany({
+          const DeleteComment = await prisma.comment.delete({
             where:{
-              postBelonging:{
-                id: Number(postId)
-              }
+                id: Number(commentsId)
             }
           });
     
-          const DeletePost = await prisma.post.delete({
-            where: { 
-              id: Number(postId) 
-            },
-          })
-    
-          res.status(201).json(DeletePost + DeleteAllMessages)
+          res.status(201).json(DeleteComment)
+          
+          break
   
         } catch (err) {
           console.error(err)

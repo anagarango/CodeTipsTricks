@@ -8,28 +8,39 @@ export default function NewPost(){
     const [category, setCategory] = useState("")
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const [errorMessage, setErrorMessage] = useState("")
 
 
     const submitData = async (e) => {
         e.preventDefault()
+        if(category == ""){
+            setErrorMessage("Error: Must select a category!")
+            return
+        } else {
+            setErrorMessage("")
+        }
         const res = await axios.post('/api/posts', { 
             title,
             content,
             category
         })
-        // setPosts([...dogbreed, res.data])
         console.log(res)
+        
+        r.push("/")
     }
     return(
         <>
             <form onSubmit={submitData}>
                 {topicCategories.map((o,i)=>(
-                    <div onClick={()=>{setCategory(o)}}>{o}</div>
+                    <div key={i} onClick={()=>{setCategory(o)}}>{o}</div>
                 ))}
-                <input onChange={(e) => setTitle(e.target.value)} placeholder="Enter Post Title" type="text" value={title}/>
-                <textarea onChange={(e) => setContent(e.target.value)} value={content} placeholder="Leave a description about the link and paste it below"></textarea>
+                <input onChange={(e) => setTitle(e.target.value)} placeholder="Enter Post Title" type="text" value={title} required/>
+                <textarea onChange={(e) => setContent(e.target.value)} value={content} placeholder="Leave a description about the link and paste it below" required></textarea>
                 <button type="submit">Submit</button>
             </form>
+            {errorMessage && <div>
+                {errorMessage}
+            </div>}
         </>
     )
 }

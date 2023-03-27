@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function Post({data, comments}){
@@ -11,7 +11,7 @@ export default function Post({data, comments}){
 
 
     const [editingPostMode, setEditingPostMode] = useState(false)
-    const [editingCommentMode, setEditingCommentMode] = useState(false)
+    const [editingCommentMode, setEditingCommentMode] = useState("")
 
     const [leaveComment, setLeaveComment] = useState("")
 
@@ -57,9 +57,19 @@ export default function Post({data, comments}){
 
     const handleUpdateComment = async (e, commentId) => {
         e.preventDefault()
-        console.log(commentId)
-        // const res = await axios.put(`/api/posts/${data[0].id}/comments/${commentId}`)
-    }    
+        const res = await axios.put(`/api/posts/${data[0].id}/comments/${commentId}`, {
+            content: editingComment
+        })
+        console.log(res)
+    }   
+    
+    const handleDeleteComment = async (commentId) => {
+        const res = await axios.delete(`/api/posts/${data[0].id}/comments/${commentId}`)
+
+        console.log(res)
+    }
+
+
     return(
         <>
             <div onClick={()=>{r.push("/")}}>Go back</div>
@@ -94,27 +104,20 @@ export default function Post({data, comments}){
                     <button type="submit">Submit</button>
                 </form>
             </div>
-            {comments.map((o,i)=> {
-                if(!editingCommentMode){
-                    return(
+            {comments.map((o,i)=> (
                         <div key={i}>
                             <p>{o.content}</p>
-                            <p onClick={()=>{setEditingCommentMode(true)}}>Edit</p>
+                            <p onClick={()=>{setEditingCommentMode(o.content); setEditingComment(o.content)}}>Edit</p>
+                            <p onClick={()=>{handleDeleteComment(o.id)}}>Delete</p>
+                            {editingCommentMode == o.content && 
+                                <form onSubmit={(e)=>{handleUpdateComment(e, o.id)}}>
+                                    <textarea onChange={(e) => setEditingComment(e.target.value)} value={editingComment} placeholder="Leave a description about the link and paste it below" required></textarea>
+                                    <button onClick={()=>{setEditingCommentMode(false)}}>Nevermind</button>
+                                    <button onClick={()=>{setEditingCommentMode(false)}} type="submit">Submit</button>
+                                </form>
+                            }
                         </div>
-                    )
-                } else {
-                    return(
-                        <form onSubmit={()=>{handleUpdateComment(event, o.id)}}>
-                            <textarea onChange={(e) => setEditingComment(e.target.value)} value={editingComment} placeholder="Leave a description about the link and paste it below" required></textarea>
-                            <button onClick={()=>{setEditingCommentMode(false)}}>Nevermind</button>
-                            <button type="submit">Submit</button>
-                        </form>
-                    )
-                }
-
-            }
-                
-            )}
+            ))}
             {deletePost && <div style={{width:"100vw", height:"100vh", backgroundColor:"rgba(0,0,0,0.7)", display:"flex", flexDirection:"column", position:"fixed", top:"0"}}>
                     <form onSubmit={handleDelete} style={{display:"flex"}}>
                         <h2>Are you sure you want to delete this post?</h2>

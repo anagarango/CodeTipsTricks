@@ -18,9 +18,12 @@ model Post {
   totalLikes  Int         @default(0)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  // likes       Like[]
+  likes       Like[]
 }
 
-// model Likes {
-
-// }
+model Like {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+}

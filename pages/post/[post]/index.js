@@ -9,24 +9,32 @@ export default function Post({data, comments}){
     const date = event.toLocaleString('en-GB', options)
     const topicCategories = ["Front-End Development", "Back-End Development", "AI / Machine Learning"]
 
+    
+
+    const [updatedComments, setUpdatedComments] = useState(comments)
+    const [updatedLikes, setUpdatedLikes] = useState(data[0].totalLikes)
+    const [updatedPost, setUpdatedPost] = useState(data)
+
+    const [leaveComment, setLeaveComment] = useState("")
+    const [deletePost, setDeletePost] = useState(false)
 
     const [editingPostMode, setEditingPostMode] = useState(false)
     const [editingCommentMode, setEditingCommentMode] = useState("")
 
-    const [leaveComment, setLeaveComment] = useState("")
-
-    const [editingCategory, setEditingCategory] = useState(data[0].category)
-    const [editingTitle, setEditingTitle] = useState(data[0].title);
-    const [editingContent, setEditingContent] = useState(data[0].content);
+    const [editingCategory, setEditingCategory] = useState(updatedPost[0].category)
+    const [editingTitle, setEditingTitle] = useState(updatedPost[0].title);
+    const [editingContent, setEditingContent] = useState(updatedPost[0].content);
     const [editingComment, setEditingComment] = useState()
 
-    const [deletePost, setDeletePost] = useState(false)
 
-    
 
     const handleLike = async () => {
         const res = await axios.put(`/api/posts/${data[0].id}/likes`)
         console.log(res)
+
+        const updateLikeRes = await fetch(`/api/posts/${data[0].id}/`);
+        const updateLike = await updateLikeRes.json();
+        setUpdatedLikes(updateLike[0].totalLikes)
     }
 
     const handleComment = async (e) => {
@@ -35,6 +43,10 @@ export default function Post({data, comments}){
             content: leaveComment
         })
         console.log(res)
+
+        const createCommentRes = await fetch(`/api/posts/${data[0].id}/comments/`);
+        const createComments = await createCommentRes.json();  
+        setUpdatedComments(createComments)
     }
 
     const handleEdit = async (e) => {
@@ -45,6 +57,11 @@ export default function Post({data, comments}){
             category: editingCategory
         })
         console.log(res)
+        setEditingPostMode(false)
+
+        const editPostRes = await fetch(`/api/posts/${data[0].id}`);
+        const editPost = await editPostRes.json();
+        setUpdatedPost(editPost)
     }
 
     const handleDelete = async (e) => {
@@ -62,12 +79,19 @@ export default function Post({data, comments}){
         })
         setEditingCommentMode(false)
         console.log(res)
+
+        const updatedCommentsRes = await fetch(`/api/posts/${data[0].id}/comments/`);
+        const updatedComments = await updatedCommentsRes.json();
+        setUpdatedComments(updatedComments)
     }   
     
     const handleDeleteComment = async (commentId) => {
         const res = await axios.delete(`/api/posts/${data[0].id}/comments/${commentId}`)
-
         console.log(res)
+
+        const deletedCommentsRes = await fetch(`/api/posts/${data[0].id}/comments/`);
+        const deletedComments = await deletedCommentsRes.json();
+        setUpdatedComments(deletedComments)
     }
 
 
@@ -76,16 +100,16 @@ export default function Post({data, comments}){
             <div onClick={()=>{r.push("/")}}>Go back</div>
             <div onClick={()=>{setEditingPostMode(true)}}>Edit</div>
             <div onClick={()=>{setDeletePost(true)}}>Delete Post</div>
-            {!editingPostMode && data.map((o,i)=>(
+            {!editingPostMode && updatedPost.map((o,i)=>(
                 <div key={i}>
                     <h1>{o.title}</h1>
                     <h5>{o.category}</h5>
                     <h6>{date}</h6>
                     <p>{o.content}</p>
-                    <p onClick={handleLike}>Number of Likes: {o.totalLikes}</p>
+                    <p onClick={handleLike}>Number of Likes: {updatedLikes}</p>
                 </div>
             ))}
-            {editingPostMode && data.map((o,i)=>(
+            {editingPostMode && updatedPost.map((o,i)=>(
                 <form onSubmit={handleEdit} key={i}>
                     <input onChange={(e) => setEditingTitle(e.target.value)} placeholder="Enter Post Title" type="text" value={editingTitle} required />
                     {topicCategories.map((o,i)=>(
@@ -95,7 +119,7 @@ export default function Post({data, comments}){
                     <textarea onChange={(e) => setEditingContent(e.target.value)} value={editingContent} placeholder="Leave a description about the link and paste it below" required></textarea>
                     <p onClick={handleLike}>Number of Likes: {o.totalLikes}</p>
                     <button onClick={()=>{setEditingPostMode(false)}}>Cancel</button>
-                    <button onClick={()=>{setEditingPostMode(false)}} type="submit">Done Editing?</button>
+                    <button type="submit">Done Editing?</button>
                 </form>
             ))}
             <div>
@@ -105,7 +129,7 @@ export default function Post({data, comments}){
                     <button type="submit">Submit</button>
                 </form>
             </div>
-            {comments.map((o,i)=> (
+            {updatedComments.map((o,i)=> (
                         <div key={i}>
                             <p>{o.content}</p>
                             <p onClick={()=>{setEditingCommentMode(o.content); setEditingComment(o.content)}}>Edit</p>
@@ -118,7 +142,7 @@ export default function Post({data, comments}){
                                 </form>
                             }
                         </div>
-            ))}
+            )).reverse()}
             {deletePost && <div style={{width:"100vw", height:"100vh", backgroundColor:"rgba(0,0,0,0.7)", display:"flex", flexDirection:"column", position:"fixed", top:"0"}}>
                     <form onSubmit={handleDelete} style={{display:"flex"}}>
                         <h2>Are you sure you want to delete this post?</h2>
@@ -141,9 +165,6 @@ export async function getServerSideProps(context){
     const allComments = await prisma.comment.findMany({
         where:{
             postBelongingId: Number(singlePost)
-        },
-        orderBy: {
-            createdAt: "desc"
         }
     })
   

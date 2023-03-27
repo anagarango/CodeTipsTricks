@@ -18,12 +18,14 @@ model Post {
   totalLikes  Int         @default(0)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  likes       Like[]
+  comments    Comment[]
 }
 
-model Like {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  post      Post     @relation(fields: [postId], references: [id])
-  postId    Int
+model Comment {
+  id                Int      @id @default(autoincrement())
+  content           String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  postBelonging     Post     @relation(fields: [postBelongingId], references: [id])
+  postBelongingId   Int
 }

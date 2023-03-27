@@ -5,14 +5,6 @@ import { prisma } from '@/server/database/client'
 export default function Home({posts}) {
   const r = useRouter()
 
-  // const SelectPost = (e) => {
-  //   r.replace({
-  //     pathname: `/posts/`
-  //   })
-  // }
-
-
-
   return (
     <>
       <Head>
@@ -23,6 +15,7 @@ export default function Home({posts}) {
       </Head>
       <main>
         CodeTipsTricks
+        <div onClick={()=>{r.push("/submit")}}>Create A Post</div>
         {posts.map((o, index) => (
               <li onClick={()=>{r.push(`/post/${o.id}`)}} key={index}>{o.title}</li>
           )

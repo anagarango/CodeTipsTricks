@@ -18,7 +18,7 @@ export default function Post({data, comments}){
     const [editingCategory, setEditingCategory] = useState(data[0].category)
     const [editingTitle, setEditingTitle] = useState(data[0].title);
     const [editingContent, setEditingContent] = useState(data[0].content);
-    const [editingComment, setEditingComment] = useState(comments[0].content)
+    const [editingComment, setEditingComment] = useState()
 
     const [deletePost, setDeletePost] = useState(false)
 
@@ -60,6 +60,7 @@ export default function Post({data, comments}){
         const res = await axios.put(`/api/posts/${data[0].id}/comments/${commentId}`, {
             content: editingComment
         })
+        setEditingCommentMode(false)
         console.log(res)
     }   
     
@@ -113,7 +114,7 @@ export default function Post({data, comments}){
                                 <form onSubmit={(e)=>{handleUpdateComment(e, o.id)}}>
                                     <textarea onChange={(e) => setEditingComment(e.target.value)} value={editingComment} placeholder="Leave a description about the link and paste it below" required></textarea>
                                     <button onClick={()=>{setEditingCommentMode(false)}}>Nevermind</button>
-                                    <button onClick={()=>{setEditingCommentMode(false)}} type="submit">Submit</button>
+                                    <button type="submit">Submit</button>
                                 </form>
                             }
                         </div>

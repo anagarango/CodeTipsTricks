@@ -6,12 +6,13 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "cockroachdb"
   url      = env("DATABASE_URL")
 }
 
+
 model Post {
-  id          Int         @id @default(autoincrement())
+  id          Int   @id @default(sequence())
   title       String
   content     String
   category    String
@@ -22,7 +23,7 @@ model Post {
 }
 
 model Comment {
-  id                Int      @id @default(autoincrement())
+  id                Int   @id @default(sequence())
   content           String
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt

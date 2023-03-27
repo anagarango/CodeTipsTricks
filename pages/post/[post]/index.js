@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
 export default function Post({data, comments}){
     const r = useRouter()
+    const textAreaRef = useRef();
     const event = new Date(data[0].createdAt)
     const options = {hour: "numeric", minute: "numeric", year: 'numeric', month: 'long', day: 'numeric' };
     const date = event.toLocaleString('en-GB', options)
@@ -47,6 +48,7 @@ export default function Post({data, comments}){
         const createCommentRes = await fetch(`/api/posts/${data[0].id}/comments/`);
         const createComments = await createCommentRes.json();  
         setUpdatedComments(createComments)
+        setLeaveComment("")
     }
 
     const handleEdit = async (e) => {
@@ -111,7 +113,7 @@ export default function Post({data, comments}){
                 </div>
             ))}
 
-            {editingPostMode && updatedPost.map((o,i )=> (
+            {editingPostMode && updatedPost.map((o,i)=>(
                 <form onSubmit={handleEdit} key={i}>
                     <input onChange={(e) => setEditingTitle(e.target.value)} placeholder="Enter Post Title" type="text" value={editingTitle} required />
                     {topicCategories.map((o,i)=>(
@@ -124,11 +126,11 @@ export default function Post({data, comments}){
                     <button type="submit">Done Editing?</button>
                 </form>
             ))}
-
+            
             <div>
                 <h3>Leave your thoughts:</h3>
                 <form onSubmit={handleComment}>
-                    <textarea onChange={(e) => setLeaveComment(e.target.value)} value={leaveComment} placeholder="Whatcha thinking?" required></textarea>
+                    <textarea ref={textAreaRef} onChange={(e) => setLeaveComment(e.target.value)} value={leaveComment} placeholder="Whatcha thinking?" required></textarea>
                     <button type="submit">Submit</button>
                 </form>
             </div>

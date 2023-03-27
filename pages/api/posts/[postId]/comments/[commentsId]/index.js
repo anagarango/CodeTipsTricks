@@ -17,7 +17,6 @@ export default async function handler(req, res) {
         } else {
           res.status(201).json(GetComment);
         }
-
         break
 
       } catch (err) {
@@ -47,7 +46,6 @@ export default async function handler(req, res) {
           }
           })
           res.status(201).json(UpdateComment)
-
           break
   
         } catch {
@@ -68,7 +66,6 @@ export default async function handler(req, res) {
           });
     
           res.status(201).json(DeleteComment)
-          
           break
   
         } catch (err) {

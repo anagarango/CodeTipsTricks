@@ -14,6 +14,7 @@ export default async function handler(req,res){
                 }
               })
               res.status(200).json(allComments)
+              break
 
             } catch (err) {
                   console.error(err)
@@ -30,6 +31,7 @@ export default async function handler(req,res){
                 }
             })
             res.status(201).json(comment)
+            break
 
           } catch(err) {
             console.error(err)

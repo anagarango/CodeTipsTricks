@@ -1,4 +1,6 @@
 import { prisma } from '../../../server/database/client'
+import { authOptions } from '../../api/auth/[...nextauth]'
+import { getServerSession } from "next-auth/next"
 
 export default async function handler(req,res){
   const method = req.method
@@ -24,6 +26,11 @@ export default async function handler(req,res){
       
     case 'POST':
       try{
+        const session = await getServerSession(req, res, authOptions)
+        if(!session){
+          res.status(401).json({error:"Unauthorized"})
+          break
+        }
         const title = req.body.title
         const content = req.body.content
         const category = req.body.category

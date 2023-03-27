@@ -1,10 +1,10 @@
 -- CreateTable
 CREATE TABLE "Post" (
-    "id" SERIAL NOT NULL,
-    "title" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
-    "category" TEXT NOT NULL,
-    "totalLikes" INTEGER NOT NULL DEFAULT 0,
+    "id" INT4 NOT NULL DEFAULT unique_rowid(),
+    "title" STRING NOT NULL,
+    "content" STRING NOT NULL,
+    "category" STRING NOT NULL,
+    "totalLikes" INT4 NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -13,11 +13,11 @@ CREATE TABLE "Post" (
 
 -- CreateTable
 CREATE TABLE "Comment" (
-    "id" SERIAL NOT NULL,
-    "content" TEXT NOT NULL,
+    "id" INT4 NOT NULL DEFAULT unique_rowid(),
+    "content" STRING NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "postBelongingId" INTEGER NOT NULL,
+    "postBelongingId" INT4 NOT NULL,
 
     CONSTRAINT "Comment_pkey" PRIMARY KEY ("id")
 );

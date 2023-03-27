@@ -9,7 +9,7 @@ export default function Post({data, comments}){
     const date = event.toLocaleString('en-GB', options)
     const topicCategories = ["Front-End Development", "Back-End Development", "AI / Machine Learning"]
 
-    
+
 
     const [updatedComments, setUpdatedComments] = useState(comments)
     const [updatedLikes, setUpdatedLikes] = useState(data[0].totalLikes)
@@ -100,6 +100,7 @@ export default function Post({data, comments}){
             <div onClick={()=>{r.push("/")}}>Go back</div>
             <div onClick={()=>{setEditingPostMode(true)}}>Edit</div>
             <div onClick={()=>{setDeletePost(true)}}>Delete Post</div>
+
             {!editingPostMode && updatedPost.map((o,i)=>(
                 <div key={i}>
                     <h1>{o.title}</h1>
@@ -109,7 +110,8 @@ export default function Post({data, comments}){
                     <p onClick={handleLike}>Number of Likes: {updatedLikes}</p>
                 </div>
             ))}
-            {editingPostMode && updatedPost.map((o,i)=>(
+
+            {editingPostMode && updatedPost.map((o,i )=> (
                 <form onSubmit={handleEdit} key={i}>
                     <input onChange={(e) => setEditingTitle(e.target.value)} placeholder="Enter Post Title" type="text" value={editingTitle} required />
                     {topicCategories.map((o,i)=>(
@@ -122,6 +124,7 @@ export default function Post({data, comments}){
                     <button type="submit">Done Editing?</button>
                 </form>
             ))}
+
             <div>
                 <h3>Leave your thoughts:</h3>
                 <form onSubmit={handleComment}>
@@ -129,27 +132,31 @@ export default function Post({data, comments}){
                     <button type="submit">Submit</button>
                 </form>
             </div>
+
             {updatedComments.map((o,i)=> (
-                        <div key={i}>
-                            <p>{o.content}</p>
-                            <p onClick={()=>{setEditingCommentMode(o.content); setEditingComment(o.content)}}>Edit</p>
-                            <p onClick={()=>{handleDeleteComment(o.id)}}>Delete</p>
-                            {editingCommentMode == o.content && 
-                                <form onSubmit={(e)=>{handleUpdateComment(e, o.id)}}>
-                                    <textarea onChange={(e) => setEditingComment(e.target.value)} value={editingComment} placeholder="Leave a description about the link and paste it below" required></textarea>
-                                    <button onClick={()=>{setEditingCommentMode(false)}}>Nevermind</button>
-                                    <button type="submit">Submit</button>
-                                </form>
-                            }
-                        </div>
+                <div key={i}>
+                    <p>{o.content}</p>
+                    <p onClick={()=>{setEditingCommentMode(o.content); setEditingComment(o.content)}}>Edit</p>
+                    <p onClick={()=>{handleDeleteComment(o.id)}}>Delete</p>
+                    {editingCommentMode == o.content && 
+                        <form onSubmit={(e)=>{handleUpdateComment(e, o.id)}}>
+                            <textarea onChange={(e) => setEditingComment(e.target.value)} value={editingComment} placeholder="Leave a description about the link and paste it below" required></textarea>
+                            <button onClick={()=>{setEditingCommentMode(false)}}>Nevermind</button>
+                            <button type="submit">Submit</button>
+                        </form>
+                    }
+                </div>
             )).reverse()}
-            {deletePost && <div style={{width:"100vw", height:"100vh", backgroundColor:"rgba(0,0,0,0.7)", display:"flex", flexDirection:"column", position:"fixed", top:"0"}}>
+
+            {deletePost && 
+                <div style={{width:"100vw", height:"100vh", backgroundColor:"rgba(0,0,0,0.7)", display:"flex", flexDirection:"column", position:"fixed", top:"0"}}>
                     <form onSubmit={handleDelete} style={{display:"flex"}}>
                         <h2>Are you sure you want to delete this post?</h2>
                         <button onClick={()=>{setDeletePost(false)}}>Nevermind</button>
                         <button type="submit">Why else would I press "Delete Post"?</button>
                     </form>
-            </div>}
+                </div>
+            }
         </>
     )
 }

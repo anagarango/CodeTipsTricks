@@ -47,6 +47,7 @@ export default async function handler(req,res){
         }
         })
         res.status(201).json(UpdatePost)
+        break
 
       } catch {
         console.error(err)
@@ -74,11 +75,11 @@ export default async function handler(req,res){
         })
   
         res.status(201).json(DeletePost + DeleteAllMessages)
+        break
 
       } catch (err) {
         console.error(err)
         res.status(500).send('Internal Server Error')
       }
-
   }
 }

@@ -7,27 +7,78 @@ export default async function handler(req,res){
 
   switch (method) {
     case 'GET':
-      const getSinglePost = await prisma.post.findMany({
-        where:{
-            id: Number(postId)
+      try{
+        const GetPost = await prisma.post.findMany({
+          where:{
+              id: Number(postId)
+          }
+        })
+        res.status(201).json(GetPost);
+        break
+
+      } catch(err) {
+        console.error(err)
+        res.status(500).send('Internal Server Error')
+      }
+
+
+
+
+
+    case 'PUT':
+      try{
+        const title = req.body.title
+        const content = req.body.content
+        const category = req.body.category
+  
+        if(!title || !content || !category){
+          res.status(400).json("Missing fields: either title, content, or category")
+          return
         }
-      })
-      res.status(201).json(getSinglePost);
-    // case 'POST':
-    //   const title = req.body.title
-    //   const content = req.body.content
-    //   const category = req.body.category
-    //   const post = await prisma.post.create({
-    //     data:{
-    //         title,
-    //         content,
-    //         category
-    //     }
-    //   })
-    //   res.status(201).json(post)
-    //   break
-    // default:
-    //     res.status(405).end(`Method ${method} not allowed`)
+  
+        const UpdatePost = await prisma.post.update({
+          where: { 
+            id: Number(postId) 
+          },
+          data:{
+            title,
+            content,
+            category
+        }
+        })
+        res.status(201).json(UpdatePost)
+
+      } catch {
+        console.error(err)
+        res.status(500).send('Internal Server Error')
+      }
+      
+
+
+
+
+    case 'DELETE':
+      try{
+        const DeleteAllMessages = await prisma.comment.deleteMany({
+          where:{
+            postBelonging:{
+              id: Number(postId)
+            }
+          }
+        });
+  
+        const DeletePost = await prisma.post.delete({
+          where: { 
+            id: Number(postId) 
+          },
+        })
+  
+        res.status(201).json(DeletePost + DeleteAllMessages)
+
+      } catch (err) {
+        console.error(err)
+        res.status(500).send('Internal Server Error')
+      }
 
   }
 }

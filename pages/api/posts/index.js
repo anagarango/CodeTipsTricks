@@ -1,5 +1,5 @@
 import { prisma } from '../../../server/database/client'
-import { authOptions } from '../../api/auth/[...nextauth]'
+import { authOptions } from '../auth/[...nextauth]'
 import { getServerSession } from "next-auth/next"
 
 export default async function handler(req,res){
@@ -31,6 +31,15 @@ export default async function handler(req,res){
           res.status(401).json({error:"Unauthorized"})
           break
         }
+
+        const prismaUser = await prisma.user.findUnique({
+          where: { email: session.user.email }
+        })
+        
+        if(!prismaUser){
+          res.status(401).json({error:"Unauthorized"})
+        }
+
         const title = req.body.title
         const content = req.body.content
         const category = req.body.category
@@ -44,7 +53,8 @@ export default async function handler(req,res){
           data:{
               title,
               content,
-              category
+              category,
+              userId: prismaUser.id
           }
         })
         res.status(201).json(post)

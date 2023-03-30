@@ -17,7 +17,10 @@ export default function Home({posts}) {
         CodeTipsTricks
         <div onClick={()=>{r.push("/submit")}}>Create A Post</div>
         {posts.map((o, index) => (
-              <li onClick={()=>{r.push(`/post/${o.id}`)}} key={index}>{o.title}</li>
+            <div key={index}>
+              <li onClick={()=>{r.push(`/post/${o.id}`)}}>{o.title}</li>
+              <p>{o.user.name}</p>
+            </div>
           )
           )}
       </main>
@@ -29,6 +32,9 @@ export async function getServerSideProps(){
   const posts = await prisma.post.findMany({
     orderBy: {
       createdAt: "desc"
+    },
+    include: {
+      user: true
     }
   })
 

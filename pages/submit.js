@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import axios from "axios";
+import { authOptions } from './api/auth/[...nextauth]'
+import { getServerSession } from "next-auth/next"
 
 export default function NewPost(){
     const r = useRouter()
@@ -44,3 +46,15 @@ export default function NewPost(){
         </>
     )
 }
+
+export async function getServerSideProps(context){
+    const session = await getServerSession(context.req, context.res, authOptions)
+    if(!session){
+        return{
+            redirect:{
+                destination: "/api/auth/signin",
+                permanent:false
+            }
+        }
+    }
+  }

@@ -1,4 +1,6 @@
 import {prisma} from "../../../../server/database/client"
+import { authOptions } from '../../auth/[...nextauth]'
+import { getServerSession } from "next-auth/next"
 
 export default async function handler(req,res){
   const method = req.method
@@ -60,6 +62,25 @@ export default async function handler(req,res){
 
     case 'DELETE':
       try{
+        const session = await getServerSession(req, res, authOptions)
+
+        if (!session) {
+          return res.status(401).send('Unauthorized');
+        }
+
+        const prismaUser = await prisma.user.findUnique({
+          where: { email: session.user.email }
+        })
+        
+        if(!prismaUser){
+          res.status(401).json({error:"Unauthorized"})
+        }
+
+        if (session.user.email !== prismaUser.email || session.user.image !== prismaUser.image) {
+          return res.status(403).send('Forbidden')
+        }
+
+
         const DeleteAllMessages = await prisma.comment.deleteMany({
           where:{
             postBelonging:{
@@ -67,6 +88,8 @@ export default async function handler(req,res){
             }
           }
         });
+
+        
   
         const DeletePost = await prisma.post.delete({
           where: { 

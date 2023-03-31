@@ -16,6 +16,7 @@ export default function Home({posts}) {
   const {data:session} = useSession()
   const [categoryChosen, setCategoryChosen] = useState("All")
   const topicCategories = ["All", "Front-End Development", "Back-End Development", "AI / Machine Learning"]
+  const [allPosts, setAllPosts] = useState(posts)
   
   const handleCreatePost = () => {
     if(!session){
@@ -23,6 +24,15 @@ export default function Home({posts}) {
     } else {
       r.push("/submit")
     }
+  }
+
+  const handleLike = async (id) => {
+    const res = await axios.put(`/api/posts/${id}/likes`)
+    console.log(res)
+
+    const updatePostsRes = await fetch(`/api/posts/`);
+    const updatePosts = await updatePostsRes.json();
+    setAllPosts(updatePosts)
   }
 
   return (
@@ -41,38 +51,23 @@ export default function Home({posts}) {
             <button key={i} onClick={()=>setCategoryChosen(o)} className={categoryChosen == o ? "p-3 rounded-[12px] bg-[#348F8A] font-bold border-solid border-2 border-[#348F8A] hover:bg-[#348F8A] hover:text-white duration-300" : "p-3 rounded-[12px] font-bold border-solid border-2 border-[#348F8A] hover:bg-[#348F8A] hover:text-white duration-300"}>{o}</button>
           ))}
         </div>
-        {posts.map((o, index) => {
+        {allPosts.map((o, index) => {
           if(categoryChosen == o.category){
             const event = new Date(o.createdAt)
             const options = {hour: "numeric", minute: "numeric", year: 'numeric', month: 'long', day: 'numeric' };
             const date = event.toLocaleString('en-GB', options)
 
-            const [updatedLikes, setUpdatedLikes] = useState(o.totalLikes)
-            const handleLike = async (id) => {
-              const res = await axios.put(`/api/posts/${id}/likes`)
-              console.log(res)
-          
-              setUpdatedLikes(res.data.totalLikes)
-            }
-
             return(
-              <PostPreview keyId={index} onClick={()=>{r.push(`/post/${o.id}`)}} profileImage={o.user.image} profileName={o.user.name} postCategory={o.category} date={date} postTitle={o.title} postContent={o.content} heartLikes={updatedLikes} addHeart={()=>handleLike(o.id)} commentLength={o.comments.length} />
+              <PostPreview keyId={index} onClick={()=>{r.push(`/post/${o.id}`)}} profileImage={o.user.image} profileName={o.user.name} postCategory={o.category} date={date} postTitle={o.title} postContent={o.content} heartLikes={o.totalLikes} addHeart={()=>handleLike(o.id)} commentLength={o.comments.length} />
             )
-          } else if(categoryChosen == "All") {
+          } 
+          else if(categoryChosen == "All") {
             const event = new Date(o.createdAt)
             const options = {hour: "numeric", minute: "numeric", year: 'numeric', month: 'long', day: 'numeric' };
             const date = event.toLocaleString('en-GB', options)
 
-            const [updatedLikes, setUpdatedLikes] = useState(o.totalLikes)
-            const handleLike = async (id) => {
-              const res = await axios.put(`/api/posts/${id}/likes`)
-              console.log(res)
-          
-              setUpdatedLikes(res.data.totalLikes)
-            }
-
             return(
-                <PostPreview keyId={index} onClick={()=>{r.push(`/post/${o.id}`)}} profileImage={o.user.image} profileName={o.user.name} postCategory={o.category} date={date} postTitle={o.title} postContent={o.content} heartLikes={updatedLikes} addHeart={()=>handleLike(o.id)} commentLength={o.comments.length} />
+                <PostPreview keyId={index} onClick={()=>{r.push(`/post/${o.id}`)}} profileImage={o.user.image} profileName={o.user.name} postCategory={o.category} date={date} postTitle={o.title} postContent={o.content} heartLikes={o.totalLikes} addHeart={()=>handleLike(o.id)} commentLength={o.comments.length} />
             )
           }
         })}

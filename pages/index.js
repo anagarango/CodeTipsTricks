@@ -43,7 +43,7 @@ export default function Home({posts}) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/codetipstricks.svg" />
       </Head>
-      <NavBar onClickSignIn={()=>setForm("signIn")} onClickSignOut={()=>setForm("signOut")} />
+      <NavBar onClickSignIn={()=>signIn()} onClickSignOut={()=>setForm("signOut")} />
       <main>
         <div onClick={handleCreatePost} className='w-full text-center mt-5 rounded-[12px] text-[20px] text-[#348F8A] py-2 bg-transparent font-bold border-solid border-2 border-[#348F8A] hover:bg-[#348F8A] hover:text-white duration-300'>Create A Post</div>
         <div className='flex justify-between mt-5 mb-16'>

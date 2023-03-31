@@ -22,8 +22,12 @@ body {
 main{
   height: 100%;
   width: 100vw;
-  max-width: 800px;
-  padding-top:100px
+  max-width: 860px;
+  padding:100px 30px 30px 30px
+}
+
+#heartHover:hover{
+  content: url('/heartFilled.png');
 }
 
 body {

@@ -13,6 +13,10 @@ export default async function handler(req,res){
         const GetPost = await prisma.post.findMany({
           where:{
               id: Number(postId)
+          },
+          include:{
+            user: true,
+            comments: true
           }
         })
         res.status(201).json(GetPost);

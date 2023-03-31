@@ -1,9 +1,25 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { prisma } from '@/server/database/client'
+import NavBar from '@/components/navbar'
+import { useState } from 'react'
+import { signIn, signOut } from "next-auth/react"
+import RegisterForm from '@/components/registerform'
+import { useSession } from "next-auth/react"
 
 export default function Home({posts}) {
   const r = useRouter()
+  const [form, setForm] = useState(false)
+  const handleSignInWithGitHub = () => signIn("github")
+  const {data:session} = useSession()
+  
+  const handleCreatePost = () => {
+    if(!session){
+      setForm("signIn")
+    } else {
+      r.push("/submit")
+    }
+  }
 
   return (
     <>
@@ -13,9 +29,9 @@ export default function Home({posts}) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <NavBar onClickSignIn={()=>setForm("signIn")} onClickSignOut={()=>setForm("signOut")} />
       <main>
-        CodeTipsTricks
-        <div onClick={()=>{r.push("/submit")}}>Create A Post</div>
+        <div onClick={handleCreatePost} className="w-full">Create A Post</div>
         {posts.map((o, index) => (
             <div key={index}>
               <li onClick={()=>{r.push(`/post/${o.id}`)}}>{o.title}</li>
@@ -23,6 +39,8 @@ export default function Home({posts}) {
             </div>
           )
           )}
+          {form == "signIn" && <RegisterForm githubOnClick={handleSignInWithGitHub} closeOnClick={()=>setForm(false)}></RegisterForm>}
+          {form == "signOut" && signOut()}
       </main>
     </>
   )

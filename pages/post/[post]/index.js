@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Head from 'next/head'
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import NavBar from '@/components/navbar'
 import axios from "axios";
 import { authOptions } from '../../api/auth/[...nextauth]'
@@ -8,41 +8,27 @@ import { getServerSession } from "next-auth/next"
 import { prisma } from "../../../server/database/client"
 import PostPreview from "@/components/postPreview";
 import EditingPost from "@/components/editingPost";
-import { Textarea  } from '@nextui-org/react';
 import Comment from "@/components/comment";
 
 export default function Post({data, comments, prismaAuth}){
     const r = useRouter()
-    const textAreaRef = useRef();
     const event = new Date(data[0].createdAt)
     const postUserDetails = data[0].user
     const sessionUserDetails = prismaAuth
 
     const options = {hour: "numeric", minute: "numeric", year: 'numeric', month: 'long', day: 'numeric' };
     const date = event.toLocaleString('en-GB', options)
-    const topicCategories = ["Front-End Development", "Back-End Development", "AI / Machine Learning"]
 
 
 
-    const [updatedComments, setUpdatedComments] = useState(comments)
+    
     const [updatedLikes, setUpdatedLikes] = useState(data[0].totalLikes)
     const [updatedPost, setUpdatedPost] = useState(data)
-
-    const [leaveComment, setLeaveComment] = useState("")
-    const [deletePost, setDeletePost] = useState(false)
-
     const [editingPostMode, setEditingPostMode] = useState(false)
-    const [editingCommentMode, setEditingCommentMode] = useState("")
 
-    const [editingCategory, setEditingCategory] = useState(updatedPost[0].category)
-    const [editingTitle, setEditingTitle] = useState(updatedPost[0].title);
-    const [editingContent, setEditingContent] = useState(updatedPost[0].content);
-    const [editingComment, setEditingComment] = useState()
+ 
 
     const childtoParent = async (editFormData) => {
-        setEditingCategory(editFormData.category)
-        setEditingTitle(editFormData.title)
-        setEditingContent(editFormData.content)
 
         const res = await axios.put(`/api/posts/${data[0].id}`, {
             title: editFormData.title,
@@ -59,56 +45,23 @@ export default function Post({data, comments, prismaAuth}){
 
     const handleLike = async () => {
         const res = await axios.put(`/api/posts/${data[0].id}/likes`)
-        console.log(res)
 
-        setUpdatedLikes(res.data.totalLikes)
+        const updatePostsRes = await fetch(`/api/posts/${data[0].id}`);
+        const updatePosts = await updatePostsRes.json();
+        setUpdatedPost(updatePosts)
     }
 
-    const handleComment = async (e) => {
-        e.preventDefault()
-        const res = await axios.post(`/api/posts/${data[0].id}/comments`, { 
-            content: leaveComment
-        })
-        console.log(res)
 
-        const comment = Object.assign(res.data.comment, res.data.session)
-        setUpdatedComments([...updatedComments, comment])
-        setLeaveComment("")
-    }
-
-    const handleDelete = async (e) => {
-        e.preventDefault()
+    const handleDelete = async () => {
         const res = await axios.delete(`/api/posts/${data[0].id}`)
         console.log(res)
 
         r.push("/")
     }
 
-    const handleUpdateComment = async (e, commentId) => {
-        e.preventDefault()
-        const res = await axios.put(`/api/posts/${data[0].id}/comments/${commentId}`, {
-            content: editingComment
-        })
-        console.log(res)
-
-        const user = { user: prismaAuth }
-        var updatedComment = Object.assign(res.data, user)
-        setUpdatedComments([...updatedComments, updatedComment])
-        setEditingCommentMode("")
-    }   
-    
-    const handleDeleteComment = async (commentId) => {
-        const res = await axios.delete(`/api/posts/${data[0].id}/comments/${commentId}`)
-        console.log(res)
-
-        setUpdatedComments((current) => current.filter((comment) => comment.id !== res.data.id))
-    }
-
     const clickedMenuItem = (e) => {
-        if(e == 'edit'){
-            setEditingPostMode(true)
-        } else if(e == 'delete'){
-            setDeletePost(true)
+        if(e == 'delete'){
+            handleDelete()
         }
     }
 
@@ -134,55 +87,9 @@ export default function Post({data, comments, prismaAuth}){
                 ))}
                 
 
-                <div>
-                    <h3 className="text-[#348F8A] text-[30px] font-extrabold flex items-center">Comments ({updatedComments.length})</h3>
-                    <form onSubmit={handleComment}>
-                        <Textarea css={{width:"100%", marginTop:"30px"}} ref={textAreaRef} onChange={(e) => setLeaveComment(e.target.value)} value={leaveComment} labelPlaceholder="Whatcha thinking?" required/>
-                        <button type="submit" className="w-full text-center mt-5 rounded-[12px] text-[20px] text-[#348F8A] py-2 bg-transparent font-bold border-solid border-2 border-[#348F8A] hover:bg-[#348F8A] hover:text-white duration-300">Post Comment</button>
-                    </form>
-                </div>
 
+                <Comment commentsData={comments} postData={data[0]} postUserDetails={postUserDetails.id} sessionUserDetails={sessionUserDetails.id}></Comment>
 
-                {updatedComments.map((o,i)=> {
-                    const event = new Date(o.createdAt)
-                    const options = {hour: "numeric", minute: "numeric", year: 'numeric', month: 'long', day: 'numeric' };
-                    const date = event.toLocaleString('en-GB', options)
-                    return(
-                        <Comment date={date} keyId={i} commentData={o}></Comment>
-                    )
-                    
-                    // <div key={i} style={{marginBottom:"20px"}}>
-                    //     <p>{o.user.name}</p>
-                    //     <p>{o.content}</p>
-
-                    //     {o.userId === sessionUserDetails.id && 
-                    //         <div>
-                    //             <p onClick={()=>{setEditingCommentMode(o.content); setEditingComment(o.content)}}>Edit</p>
-                    //             <p onClick={()=>{handleDeleteComment(o.id)}}>Delete</p>
-                    //         </div>
-                    //     } 
-
-                    //     {editingCommentMode == o.content && 
-                    //         <form onSubmit={(e)=>{handleUpdateComment(e, o.id)}}>
-                    //             <textarea onChange={(e) => setEditingComment(e.target.value)} value={editingComment} placeholder="Leave a description about the link and paste it below" required></textarea>
-                    //             <button onClick={()=>{setEditingCommentMode(false)}}>Nevermind</button>
-                    //             <button type="submit">Submit</button>
-                    //         </form>
-                    //     }
-                    // </div>
-                }).reverse()}
-
-
-
-                {deletePost && 
-                    <div style={{width:"100vw", height:"100vh", backgroundColor:"rgba(0,0,0,0.7)", display:"flex", flexDirection:"column", position:"fixed", top:"0"}}>
-                        <form onSubmit={handleDelete} style={{display:"flex"}}>
-                            <h2>Are you sure you want to delete this post?</h2>
-                            <button onClick={()=>{setDeletePost(false)}}>Nevermind</button>
-                            <button type="submit">Why else would I press "Delete Post"?</button>
-                        </form>
-                    </div>
-                }
             </main>
         </>
     )

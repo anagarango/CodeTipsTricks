@@ -33,15 +33,14 @@ main{
 .nextui-c-hzQjrs.nextui-c-hzQjrs-hyKnjc-asPlaceholder-true.nextui-c-hzQjrs-ibDEqG-cv.nextui-input-block-label, .nextui-c-hzQjrs.nextui-c-hzQjrs-hyKnjc-asPlaceholder-true.nextui-c-hzQjrs-bCvCOf-focused-true.nextui-c-hzQjrs-eBkJfj-cv.nextui-input-block-label, .nextui-c-hzQjrs.nextui-c-hzQjrs-hyKnjc-asPlaceholder-true.nextui-c-hzQjrs-eLbANx-cv.nextui-c-hzQjrs-eLayoJ-cv.nextui-input-block-label, .nextui-c-hzQjrs.nextui-c-hzQjrs-hyKnjc-asPlaceholder-true.nextui-c-hzQjrs-bCvCOf-focused-true.nextui-c-hzQjrs-eLbANx-cv.nextui-c-hzQjrs-kowSHd-cv.nextui-input-block-label{
   color:white;
   left:0;
+  z-index: 1;
+}
+
+.nextui-c-hzQjrs.nextui-c-hzQjrs-hyKnjc-asPlaceholder-true.nextui-c-hzQjrs-eLbANx-cv.nextui-input-block-label{
+  z-index: 1;
 }
 
 a {
   color: inherit;
   text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
 }

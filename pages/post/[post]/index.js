@@ -60,7 +60,9 @@ export default function Post({data, comments, prismaAuth}){
     }
 
     const clickedMenuItem = (e) => {
-        if(e == 'delete'){
+        if(e == 'edit'){
+            setEditingPostMode(true)
+        } else if(e == 'delete'){
             handleDelete()
         }
     }
@@ -79,14 +81,12 @@ export default function Post({data, comments, prismaAuth}){
                 <img onClick={()=>{r.push("/")}} src="/close.png" className='w-5 mb-5 cursor-pointer'></img>
 
                 {!editingPostMode && updatedPost.map((o,i)=>(
-                    <PostPreview postData={o} keyId={i} onClick={()=>{r.push(`/post/${o.id}`)}} profileImage={o.user.image} profileName={o.user.name} postCategory={o.category} date={date} postTitle={o.title} postContent={o.content} heartLikes={o.totalLikes} addHeart={()=>handleLike(o.id)} commentLength={o.comments.length} preview={false} postUserDetails={postUserDetails.id} sessionUserDetails={sessionUserDetails.id} onClickEdit={(e)=>{clickedMenuItem(e)}} />
+                    <PostPreview postData={o} keyId={i} onClick={()=>{r.push(`/post/${o.id}`)}} date={date} addHeart={()=>handleLike(o.id)} preview={false} postUserDetails={postUserDetails.id} sessionUserDetails={sessionUserDetails.id} onClickEdit={(e)=>{clickedMenuItem(e)}} />
                 ))}
 
                 {editingPostMode && updatedPost.map((o,i)=>(
                     <EditingPost postData={o} childParent={childtoParent} date={date} addHeart={()=>handleLike(o.id)} preview={false} cancelButton={()=>{setEditingPostMode(false)}}/>
                 ))}
-                
-
 
                 <Comment commentsData={comments} postData={data[0]} postUserDetails={postUserDetails.id} sessionUserDetails={sessionUserDetails.id}></Comment>
 

@@ -17,15 +17,13 @@ export default async function handler(req, res) {
         } else {
           res.status(201).json(GetComment);
         }
-        break
-
+        
       } catch (err) {
         console.error(err)
         res.status(500).send('Internal Server Error')
       }
-
-
-
+      
+      break
 
 
       case 'PUT':
@@ -46,31 +44,31 @@ export default async function handler(req, res) {
           }
           })
           res.status(201).json(UpdateComment)
-          break
-  
+          
         } catch {
           console.error(err)
           res.status(500).send('Internal Server Error')
         }
         
+        break
   
   
   
   
       case 'DELETE':
         try{
+          // console.log("del comment")
           const DeleteComment = await prisma.comment.delete({
             where:{
-                id: Number(commentsId)
+                id: parseInt(commentsId)
             }
           });
     
-          res.status(201).json(DeleteComment)
-          break
-  
+          res.status(200).json(DeleteComment)
         } catch (err) {
           console.error(err)
           res.status(500).send('Internal Server Error')
         }
+        break
   }
 }

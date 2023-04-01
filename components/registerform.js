@@ -10,7 +10,7 @@ export default function RegisterForm({
                 <img onClick={closeOnClick} src="/close.png" className='w-4'></img>
                 <div className='flex flex-col w-full justify-center items-center'>
                   <h1 className='text-[#348F8A] text-[30px] font-bold'>Get the full </h1>
-                  <img className='max-w-[650px]' src="/codetipstricks.gif"/>
+                  <img className='max-w-[650px] w-full' src="/codetipstricks.gif"/>
                   <h1 className='text-[#348F8A] text-[30px] font-bold'>Experience </h1>
                 </div>
                 <form className='flex flex-col'>

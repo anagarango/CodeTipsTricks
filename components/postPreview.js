@@ -14,7 +14,7 @@ export default function PostPreview({
     return(
         <div key={keyId} className='bg-[#333333] w-full rounded-[12px] py-5 px-8 mb-8 max-w-[860px]'>
             <div onClick={onClick} className='flex items-center cursor-pointer justify-between'>
-                <div className="flex">
+                <div className="flex flex-col sm:flex-row">
                     <img className='h-12 w-12 rounded-[50%] mr-4' src={postData.user.image}/>
                     <div>
                         <h2 className='text-[#348F8A] text-[20px] font-extrabold flex items-center'>{postData.user.name}

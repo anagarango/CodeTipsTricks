@@ -26,6 +26,14 @@ export default function Home({posts}) {
     }
   }
 
+  const handleViewPost = (postId) => {
+    if(!session){
+      setForm("signIn")
+    } else {
+      r.push(`/post/${postId}`)
+    }
+  }
+
   const handleLike = async (id) => {
     const res = await axios.put(`/api/posts/${id}/likes`)
     console.log(res)
@@ -46,7 +54,7 @@ export default function Home({posts}) {
       <NavBar onClickSignIn={()=>setForm("signIn")} onClickSignOut={()=>setForm("signOut")} />
       <main>
         <div onClick={handleCreatePost} className='w-full text-center mt-5 rounded-[12px] text-[20px] text-[#348F8A] py-2 bg-transparent font-bold border-solid border-2 border-[#348F8A] hover:bg-[#348F8A] hover:text-white duration-300'>Create A Post</div>
-        <div className='flex justify-between mt-5 mb-16 -mx-1'>
+        <div className='flex justify-between mt-5 mb-16 -mx-1 flex-wrap sm:flex-nowrap'>
           {topicCategories.map((o,i) => (
             <button key={i} onClick={()=>setCategoryChosen(o)} className={categoryChosen == o ? "m-1 p-3 rounded-[12px] bg-[#348F8A] font-bold border-solid border-2 border-[#348F8A] hover:bg-[#348F8A] hover:text-white duration-300" : "m-1 p-3 rounded-[12px] font-bold border-solid border-2 border-[#348F8A] hover:bg-[#348F8A] hover:text-white duration-300"}>{o}</button>
           ))}
@@ -58,7 +66,7 @@ export default function Home({posts}) {
             const date = event.toLocaleString('en-GB', options)
 
             return(
-              <PostPreview postData={o} keyId={index} onClick={()=>{r.push(`/post/${o.id}`)}} date={date} addHeart={()=>handleLike(o.id)} preview={true} />
+              <PostPreview postData={o} keyId={index} onClick={()=>{handleViewPost(o.id)}} date={date} addHeart={()=>handleLike(o.id)} preview={true} />
             )
           } 
           else if(categoryChosen == "All") {
@@ -67,7 +75,7 @@ export default function Home({posts}) {
             const date = event.toLocaleString('en-GB', options)
 
             return(
-                <PostPreview postData={o} keyId={index} onClick={()=>{r.push(`/post/${o.id}`)}} date={date} addHeart={()=>handleLike(o.id)} preview={true} />
+                <PostPreview postData={o} keyId={index} onClick={()=>{handleViewPost(o.id)}} date={date} addHeart={()=>handleLike(o.id)} preview={true} />
             )
           }
         })}

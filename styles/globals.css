@@ -23,7 +23,7 @@ main{
   height: 100%;
   width: 100vw;
   max-width: 860px;
-  padding:100px 30px 30px 30px
+  padding:100px 15px 30px 15px
 }
 
 #heartHover:hover{

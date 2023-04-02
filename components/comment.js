@@ -4,7 +4,6 @@ import { useState, useRef } from "react";
 import axios from "axios";
 
 export default function Comment({
-    postUserDetails = 1,
     sessionUserDetails = 2,
     postData,
     commentsData
@@ -25,6 +24,7 @@ export default function Comment({
 
         const comment = Object.assign(res.data.comment, res.data.session)
         setUpdatedComments([...updatedComments, comment])
+        console.log(updatedComments)
         setLeaveComment("")
     }
 
@@ -87,7 +87,7 @@ export default function Comment({
                                     </div>
                                 </div>
                             </div>
-                            {postUserDetails == sessionUserDetails && 
+                            {o.user.id == sessionUserDetails && 
                                 <Dropdown>
                                     <Dropdown.Button flat><img src="/menu.png" className="w-6"></img></Dropdown.Button>
                                     <Dropdown.Menu onAction={(e)=>{handleDeleteComment(e, o.id); setCommentChosen(o); setUpdateComment(o.content)}} aria-label="Static Actions">

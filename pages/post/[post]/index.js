@@ -88,7 +88,7 @@ export default function Post({data, comments, prismaAuth}){
                     <EditingPost postData={o} childParent={childtoParent} date={date} addHeart={()=>handleLike(o.id)} preview={false} cancelButton={()=>{setEditingPostMode(false)}}/>
                 ))}
 
-                <Comment commentsData={comments} postData={data[0]} postUserDetails={postUserDetails.id} sessionUserDetails={sessionUserDetails.id}></Comment>
+                <Comment commentsData={comments} postData={data[0]} sessionUserDetails={sessionUserDetails.id}></Comment>
 
             </main>
         </>

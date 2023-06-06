@@ -1,38 +1,18 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## CodeTipsTricks
+CodeTipsTricks is a full-stack web application with authorization that allows web developers share their favourite links that helped them expand their coding knowledge in sections either in Front-end, Back-end, and Machine Learning / AI. As someone who spends a lot of time looking for great resources to help me in this field, that's what motivated me to create a web app that would allow so (similar to Reddit).
 
-## Getting Started
+## Technologies Used
+* [Next.js](https://nextjs.org/) - framework that handles both the front and back end in one spot, I added RESTful APIs under pages > api to handle methods of both posts and comments. 
+* [Next-Auth](https://next-auth.js.org/) - adding authorization to allow only logged in users to create posts and comments.
+* [Axios](https://axios-http.com/) - HTTP Client to make requests and receive responses from the request and manipulate the data sent back if needed.
+* [PostgreSQL (Prisma)](https://www.prisma.io/) - simplified way to build a database where data will be read and written.
+* [TailwindCSS](https://tailwindcss.com/) - handles all styling for each component, simpler than writing CSS or styled-components.
+* [CockroachDB]() - in order to make the database public, this cloud database will take care of the setup, maintenance, and security and allows the app to read and write data.
 
-First, run the development server:
+## Challenges
+Setting up CockroachDB was a bit confusing since I wasn't sure why I had to use it for, but after a quick Google Search, this [Prisma's link](https://www.prisma.io/cockroachdb) helped explain it a bit. 
+Next-Auth was also a bit intimating since I hadn't any kind of authorization on the app but after reading the documentation and watching a few videos on how to set it up, I understood it a bit more.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Future Features
+Some features i would like to add (actually fix) is to only allow one like per post when you are logged in, cause right now, i didn't set up a database schema for liking posts so right now users can click on the like button as many times as they like.
+I would also need to fix the email authentication since right now, only the Github authentication to sign in works, so i would check out how to fix that.
